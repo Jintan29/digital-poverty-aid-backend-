@@ -9,7 +9,11 @@ router
     //Auth
     .post('/register',UserController.register)
     .post('/login',UserController.login)
+    .post('/refrest',UserController.refresh)
+    .post('/logout',auth,UserController.logout)
+
     .get('/currrentUser',auth,UserController.currentUser)
+    .get('/test',auth,UserController.test)
     
     //CRUD
     .get('/list',auth,UserController.userList) //Return only user that has role
