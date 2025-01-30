@@ -2,7 +2,7 @@ const db = require("../models");
 const user_model = db.User;
 const token_model = db.Token;
 
-const generateCustomId = require("../utils/idGenerator");
+
 
 //JWT
 const bcrypt = require("bcrypt");
@@ -55,7 +55,7 @@ const register = async (req, res) => {
 
     // If both email and username are available, create the user
     const user = await user_model.create({
-      id: generateCustomId(),
+      
       email: value.email,
       username: value.username,
       password: hashedPassword,
