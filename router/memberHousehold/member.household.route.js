@@ -20,4 +20,7 @@ router
     .get("/count", MemberHousController.conuntMemberHousehold)
     .post("/create-capital", MemberHousController.createCombined)
     .get("/district-count", MemberHousController.getMembersCountByDistrict)
+
+    //TEST
+    .put('/update-log/:id',auth,MemberHousController.updateMemberLog)
 module.exports = router;

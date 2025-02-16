@@ -9,8 +9,42 @@ const db = require("../models");
 const member_model = db.MemberHousehold;
 const household_model = db.Household;
 const member_finan_model = db.MemberFinancial;
+const admin_log_model = db.AdminLog
 const { Op, where } = require("sequelize");
-const { options } = require("joi");
+
+
+//test admin log
+const updateMemberLog = async(req,res)=>{
+  try{
+
+    const {id} = req.params; // member id
+    const memberHouse = await member_model.findByPk(id)
+    
+    if(!memberHouse){
+      return res.status(404).send({message:'ไม่พบสมาชิกครัวเรือน'})
+    }
+
+    const updateData = await memberHouse.update(req.body);
+
+    //เก็บ log
+    const logData ={
+      user_id: req.user.id,
+      action:'update Memberhousehold',
+      table_name:'MemberHousehold',
+      record_id:id,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }
+
+    //สร้างข้อมูลลง log
+    await admin_log_model.create(logData);
+
+    return res.status(200).send({message:'success',result:updateData})
+
+  }catch(err){
+    return res.status(500).send({message:"Sever error",error:err.message})
+  }
+}
 
 const List = async (req, res) => {
   await memberHouseService
@@ -420,5 +454,7 @@ module.exports = {
   getMembersCountByDistrict,
   findCapital,
   searchByName,
-  searchByHouseCode
+  searchByHouseCode,
+  //TEST
+  updateMemberLog
 };

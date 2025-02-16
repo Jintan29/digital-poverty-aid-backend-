@@ -17,6 +17,7 @@ module.exports = (sequelize) => {
         onDelete: 'SET NULL',     
         onUpdate: 'CASCADE',      
       })
+      MemberHousehold.hasMany(models.AdminLog,{foreignKey:'record_id'})
     }
 
   }

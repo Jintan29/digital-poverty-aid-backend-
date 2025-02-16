@@ -28,6 +28,7 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: 'SET NULL',  
         onUpdate: 'CASCADE',
       })
+      User.hasMany(models.AdminLog,{foreignKey:'user_id'})
     }
   }
   User.init({

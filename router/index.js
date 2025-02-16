@@ -45,6 +45,9 @@ const formInsertAll = require('./FormInsertAll/form.insert.all')
 const District = require('../router/District/district.router');
 const HelpMember = require('./HelpMember/HelpMember.route')
 
+//TEST
+const AdminLog = require("./AdminLog/AdminLog.route")
+
 
 const RouterList = [
     {
@@ -218,8 +221,13 @@ const RouterList = [
     {
         path:'/help-member',
         route:HelpMember
+    },
+    {
+        path:'/log',
+        route:AdminLog
     }
 
+    
     
 
 ];
