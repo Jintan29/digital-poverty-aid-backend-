@@ -68,6 +68,7 @@ const SummaryReport = async(req,res)=>{
         id: log.id,
         user_id: log.user_id,
         action: log.action,
+        house_code: log.house_code,
         table_name: log.table_name,
         record_id: log.record_id,
         createdAt: log.createdAt,

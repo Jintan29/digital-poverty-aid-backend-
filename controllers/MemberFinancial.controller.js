@@ -1,6 +1,8 @@
 const db = require("../models");
 const member_finan_model = db.MemberFinancial;
 const avg_mem_income = db.AvgMemberIncome;
+const member_model = db.MemberHousehold
+const household_model = db.Household
 const { Op } = require("sequelize");
 const {
   createSchema,
@@ -40,7 +42,24 @@ const create = async (req, res) => {
       member_house_id: value.member_house_id,
       editBy: user_id,
     });
-    await logService.createLog(user_id, "เพิ่มข้อมูลการเงินของสมาชิก", "MemberFinancial", result.id);
+
+    //find HC to create Log
+    const member =  await member_model.findByPk(value.member_house_id,{
+      attributes:['id','houseId'],
+      include:[
+        {
+          model:household_model,
+          attributes:['id','house_code']
+        }
+      ]
+    })
+
+    const memberJson = await member.toJSON()
+    const hc = memberJson.Household.house_code
+
+    
+   await logService.createLog(user_id, "เพิ่มข้อมูลการเงินของสมาชิก", "MemberFinancial", result.id , hc);
+    
     return res.status(200).send({ message: "success", result: result });
   } catch (errors) {
     return res

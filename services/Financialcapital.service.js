@@ -11,6 +11,7 @@ const debt_model = db.Debt;
 const creditsources_model = db.Creditsources;
 const memberHousehold_model = db.MemberHousehold;
 const physicalCapital_model = db.PhysicalCapital;
+const help_member_model = db.HelpMember;
 
 exports.getFinalcapital = () => {
   try {
@@ -370,6 +371,22 @@ exports.getAllFinancialData = async (householdId) => {
       where: { houseId: householdId },
     });
 
+    //นับจำนวนการช่วยเหลือทั้งหมดในครัวเรือน
+    const household_help = await memberHousehold_model.findAll({
+      where:{
+        houseId:householdId
+      },
+      include:[
+        {
+          model:help_member_model,
+          attributes:['id']
+        }
+      ]
+    })
+    const totalHelped =  household_help.reduce((total,member)=>{
+      return total + member.HelpMembers.length;
+    },0)
+
     const financialCapital = household.Form?.Financialcapital;
 
     // Calculate expenses (เฉพาะข้อมูลล่าสุด)
@@ -461,6 +478,7 @@ exports.getAllFinancialData = async (householdId) => {
     // Return the combined data
     return {
       ...household.toJSON(), // Convert household data to JSON
+      totalHelped,
       financialSummary: {
         totalExpenses, // Total expenses (เฉพาะข้อมูลล่าสุด)
         totalAmountPerYear, //รายได้นอกการเกษตรล่าสุด

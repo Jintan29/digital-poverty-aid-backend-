@@ -21,6 +21,9 @@ module.exports = {
       record_id: {
         type: Sequelize.INTEGER
       },
+      house_code: {
+        type: Sequelize.STRING
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
