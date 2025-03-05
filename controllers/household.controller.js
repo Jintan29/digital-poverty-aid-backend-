@@ -211,7 +211,7 @@ const updateHouse = async (req, res) => {
 
     if (result[0] === 1) { // Sequelize update() returns an array, [1] means update success
       // บันทึก Log
-      await logService.createLog(adminId, "แก้ไขข้อมูลครัวเรือน", "Household", id);
+      await logService.createLog(adminId, "แก้ไขข้อมูลครัวเรือน", "Household", id, houseObj.house_code);
 
       return res.send({
         data: result,
@@ -429,7 +429,7 @@ const createAgiFinancial = async (req, res) => {
     })
 
     // บันทึก Log
-    await logService.createLog(adminId, "เพิ่มข้อมูลการเงินภาคเกษตรของครัวเรือน", "AgiFinancial", result.id);
+    await logService.createLog(adminId, "เพิ่มข้อมูลการเงินภาคเกษตรของครัวเรือน", "AgiFinancial", result.id , household.house_code);
 
     return res.status(200).send({ message: 'success', result })
 

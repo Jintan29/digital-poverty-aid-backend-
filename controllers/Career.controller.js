@@ -1,5 +1,7 @@
 const db = require('../models')
 const career_model = db.Career
+const member_model = db.MemberHousehold
+const household_model = db.Household
 const Joi = require('joi')
 const logService = require("../services/log.service");
 
@@ -38,6 +40,24 @@ const create = async (req, res) => {
         ...item,
         editBy: user_id
       }));
+
+      //ดู id สมาชิก
+      const memberId = value[0].member_house_id
+      const member = await member_model.findByPk(memberId,
+        {
+          attributes:['id','houseId'],
+          include:[
+            {
+              model:household_model,
+              attributes:['id','house_code']
+            }
+          ]
+        }
+      )
+      const memberJson = await member.toJSON()
+      const hc = memberJson.Household.house_code
+      
+      
   
       // ✅ ใช้ bulkCreate และดึงข้อมูลที่ถูกสร้างขึ้นมา
       const results = await career_model.bulkCreate(dataToCreate, {
@@ -46,7 +66,7 @@ const create = async (req, res) => {
   
       // ✅ สร้าง Log ทีละรายการ
       const logPromises = results.map(record => 
-        logService.createLog(user_id, "เพิ่มข้อมูลทักษะอาชีพของสมาชิก", "Career", record.id)
+        logService.createLog(user_id, "เพิ่มข้อมูลทักษะอาชีพของสมาชิก", "Career", record.id,hc)
       );
       await Promise.all(logPromises);
   

@@ -1,6 +1,8 @@
 const SocialWelfareService = require("../services/SocialWelfare.services");
 const db = require("../models");
 const socialWelfare_model = db.SocialWelfare;
+const member_model = db.MemberHousehold
+const household_model = db.Household
 const Joi = require("joi");
 const logService = require("../services/log.service");
 
@@ -163,9 +165,25 @@ const createArr = async (req, res) => {
       returning: true // ให้ Sequelize คืนค่ารายการที่ถูกสร้าง
     });
 
+    //ดึง HC บันทึกลง DB
+    const memberId = value[0].member_house_id
+    const member = await member_model.findByPk(memberId,
+      {
+        attributes:['id','houseId'],
+        include:[
+          {
+            model:household_model,
+            attributes:['id','house_code']
+          }
+        ]
+      }
+    )
+    const memberJson = await member.toJSON()
+    const hc = memberJson.Household.house_code
+
     // ✅ บันทึก Log ทีละรายการ
     const logPromises = results.map(record =>
-      logService.createLog(user_id, "เพิ่มข้อมูลสวัสดิการสังคมของสมาชิก", "SocialWelfare", record.id)
+      logService.createLog(user_id, "เพิ่มข้อมูลสวัสดิการสังคมของสมาชิก", "SocialWelfare", record.id,hc)
     );
     await Promise.all(logPromises);
 

@@ -24,10 +24,6 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'record_id',
         constraints: false
       });
-      Log.belongsTo(models.Saving, {
-        foreignKey: 'record_id',
-        constraints: false
-      });
       Log.belongsTo(models.Creditsources, {
         foreignKey: 'record_id',
         constraints: false
@@ -70,7 +66,8 @@ module.exports = (sequelize, DataTypes) => {
     user_id: DataTypes.INTEGER,
     action: DataTypes.STRING,
     table_name: DataTypes.STRING,
-    record_id: DataTypes.INTEGER
+    record_id: DataTypes.INTEGER,
+    house_code: DataTypes.STRING
   }, {
     sequelize,
     freezeTableName: true,

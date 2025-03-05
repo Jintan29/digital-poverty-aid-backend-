@@ -1,6 +1,7 @@
 const { Op } = require("sequelize");
 const db = require("../models");
-const logService = require("../services/Log.service");
+// const logService = require("../services/Log.service");
+const logService = require('../services/log.service')
 const help_member_model = db.HelpMember;
 const member_model = db.MemberHousehold;
 const household_model = db.Household;
@@ -51,6 +52,21 @@ const create = async (req, res) => {
     }
     // ✅ เพิ่มข้อมูลว่าใครบันทึก
     const user_id = req.user.id;
+    const memberId = value.member_house_id
+    const member = await member_model.findByPk(memberId,
+      {
+        attributes:['id','houseId'],
+        include:[
+          {
+            model:household_model,
+            attributes:['id','house_code']
+          }
+        ]
+      }
+    )
+    const memberJson = await member.toJSON()
+    const hc = memberJson.Household.house_code
+    
 
     const result = await help_member_model.create({
       ...value,
@@ -58,7 +74,7 @@ const create = async (req, res) => {
     });
 
     // ✅ บันทึก Log ว่าใครบันทึก (โดยใช้ user_id ใน action)
-    await logService.createLog(user_id, "เพิ่มข้อมูลการช่วยเหลือ", "HelpMember", result.id);
+    await logService.createLog(user_id, "เพิ่มข้อมูลการช่วยเหลือ", "HelpMember", result.id,hc);
 
     // const result = await help_member_model.create(value);
     return res.status(200).send({ message: "success", result });

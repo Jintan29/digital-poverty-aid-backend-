@@ -26,13 +26,14 @@ exports.getLog = () => {
   }
 };
 
-exports.createLog = async (userId, action, tableName, recordId) => {
+exports.createLog = async (userId, action, tableName, recordId, house_code) => {
   try {
     await log_model.create({
       user_id: userId,
       action: action,
       table_name: tableName,
       record_id: recordId,
+      house_code:house_code,
       createdAt: new Date(),
       updatedAt: new Date(),
     });
@@ -325,7 +326,7 @@ exports.listAction = async (userId) => {
 
 exports.buildSummaryPDF = async (dataCallback, endCallback, actionLogs,user) => {
   try {
-    console.log(user);
+    // console.log(user);
     
     const doc = new PDFDocument({
       size: "A4",
@@ -363,7 +364,7 @@ exports.buildSummaryPDF = async (dataCallback, endCallback, actionLogs,user) => 
     const startX = 50;
     let startY = 120;
     const rowHeight = 30;
-    const colWidths = [50, 220, 140, 80];
+    const colWidths = [50, 250, 110, 80];
 
     //ข้อมูลในตารางที่จะแสดงผล
     const tableData = [
@@ -372,8 +373,8 @@ exports.buildSummaryPDF = async (dataCallback, endCallback, actionLogs,user) => 
         
         const date = new Date(log.createdAt);
         const thaiMonths = [
-          "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน",
-          "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"
+          "ม.ค", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.",
+          "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."
         ];
 
         //แปลงวันที่ภาษาไทย
@@ -383,7 +384,7 @@ exports.buildSummaryPDF = async (dataCallback, endCallback, actionLogs,user) => 
 
         return [
           (index + 1).toString(),
-          log.action,
+          `${log.action} ( ${log.house_code} )` ,
           `${day} ${month} ${year}`,
           dayjs(date).format("HH:mm")
         ];
