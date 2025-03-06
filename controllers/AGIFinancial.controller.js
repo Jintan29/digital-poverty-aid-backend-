@@ -6,6 +6,7 @@ const createSchema = Joi.object({
     type: Joi.string().required(),
     amount_per_year: Joi.number().required(),
     finan_capital_id:Joi.number().required(),
+    // Test
 })
 
 
