@@ -13,11 +13,16 @@ const nodeMailer = require("nodemailer");
 //config ข้อมูลเมลเราที่จะใช้ส่ง
 const transporter = nodeMailer.createTransport({
   service: "gmail",
-  secure: false,
+  host: "smtp.gmail.com",
+  port: 587, // เปลี่ยนพอร์ตเป็น 587 (TLS)
+  secure: false, // TLS ไม่ใช่ SSL ดังนั้น secure เป็น false
   auth: {
     user: gmail,
     pass: appPass,
   },
+  tls: {
+    rejectUnauthorized: false // ช่วยแก้ปัญหา certificate
+  }
 });
 
 //TEST
