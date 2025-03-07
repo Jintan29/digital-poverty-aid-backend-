@@ -158,7 +158,7 @@ exports.findIncome = async (householdId) => {
             include: [
               {
                 model: nonAgiIncome_model,
-                order: [['createdAt', 'DESC']], 
+                order: [['createdAt', 'DESC']],
               },
               {
                 model: AGI_financial_model,
@@ -458,6 +458,15 @@ exports.getAllFinancialData = async (householdId) => {
       );
     }
 
+    // คำนวณรายได้รวม (Net Income)
+    const totalIncomePerYear = totalAmountPerYear + totalAGIincomePerYear;
+    const netIncome =
+      totalIncomePerYear + totalSaving - totalExpenses - totalCostPerYear - totalDebt;
+
+    // กำหนดเส้นความยากจน
+    const povertyLine = 36000;
+    const breakEven = netIncome >= povertyLine; // true = หลุดพ้นความจน
+
     // Return the combined data
     return {
       ...household.toJSON(), // Convert household data to JSON
@@ -465,10 +474,11 @@ exports.getAllFinancialData = async (householdId) => {
         totalExpenses, // Total expenses (เฉพาะข้อมูลล่าสุด)
         totalAmountPerYear, //รายได้นอกการเกษตรล่าสุด
         totalAGIincomePerYear: totalAGIincomePerYear, //รายได้จากการเกษตร
-        totalIncomePerYear: totalAmountPerYear + totalAGIincomePerYear , //รายได้รวม นอก+ใน การเกษตรล่าสุด
+        totalIncomePerYear: totalAmountPerYear + totalAGIincomePerYear, //รายได้รวม นอก+ใน การเกษตรล่าสุด
         totalCostPerYear, // Total annual cost (เฉพาะข้อมูลล่าสุด)
         totalSaving, // Total savings
         totalDebt, // Total debt
+        breakEven, 
       },
       memberCount, // Total members in the household
     };
