@@ -62,7 +62,7 @@ const forgotPass = async (req, res) => {
     const token = jwt.sign(payload, secret, { expiresIn: "15m" });
 
     const link = `${base_url}/reset-password/${user.id}/${token}`;
-    console.log(link);
+    // console.log(link);
 
     //ตรงนี้ส่งไปหาที่ email ของ user
     let mailOptions = {

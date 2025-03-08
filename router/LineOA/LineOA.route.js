@@ -6,7 +6,6 @@ const LineOAController = require('../../controllers/LineOA/LineOA.controller')
 
 
 router
-    .get('/test',LineOAController.test)
     .post('/webhook', 
         express.json(),
         LineOAController.webHook

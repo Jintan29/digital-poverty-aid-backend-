@@ -127,14 +127,6 @@ const webHook = async (req, res) => {
   }
 };
 
-const test = async (req, res) => {
-  try {
-    console.log(config);
-    return res.send({ message: "Test response" });
-  } catch (err) {
-    return res.status(500).send({ message: "Sever error", error: err.message });
-  }
-};
 
 //log report per month
 const Loging = async (req, res) => {
@@ -895,7 +887,6 @@ const changeMenu = async (req, res) => {
 };
 
 module.exports = {
-  test,
   webHook,
   pushMessage,
   register,
