@@ -251,6 +251,7 @@ RouterList.forEach((route) => {
 //เพิ่ม ping ให้ sever active
 router.get('/ping',(req,res)=>{
     res.status(200).send('OK')
+    console.log('Ping');
 })
 
 module.exports = router;
