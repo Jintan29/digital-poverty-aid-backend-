@@ -97,6 +97,10 @@ const login = async (req, res) => {
         .send({ message: "ชื่อผู้ใช้ หรือ รหัสผ่านไม่ถูกต้อง" });
     }
 
+    if(user.role == null){
+      return res.status(401).send({message:'รอการอนุมัติจากผู้ดูแลระบบ'})
+    }
+
     const passwordValit = await bcrypt.compare(value.password, user.password);
     if (!passwordValit) {
       return res.status(401).send({ message: "รหัสผ่านไม่ถูกต้อง" });
