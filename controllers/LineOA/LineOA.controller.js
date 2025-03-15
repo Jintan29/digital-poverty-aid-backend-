@@ -151,6 +151,7 @@ const Loging = async (req, res) => {
         },
       },
       include: line_oa_model,
+      order:[['id','DESC']],
       limit: limit,
       offset: offset,
     });

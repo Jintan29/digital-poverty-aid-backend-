@@ -83,6 +83,7 @@ const userList = async(req,res)=>{
   try{
     const user = await user_model.findAll({
       attributes:{exclude:['password']},
+      order:[['id','ASC']],
       where:{
         role:{
           [Op.not]:null

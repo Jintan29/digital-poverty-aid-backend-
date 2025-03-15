@@ -25,8 +25,6 @@ const updateUserSchema = Joi.object({
     title: Joi.string().optional(),
     fname: Joi.string().optional(),
     lname: Joi.string().optional(),
-    role: Joi.string().optional(),
-    status: Joi.string().optional(),
 })
 
 module.exports = {createUserSchema,updateUserSchema,loginSchema}
