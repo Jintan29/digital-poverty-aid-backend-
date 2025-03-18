@@ -51,6 +51,18 @@ const create = async (req, res) => {
   }
 
   try {
+
+    //chck HC
+    const houseCode = await housedole_model.findOne({
+      where:{
+        house_code : value.Household.house_code
+      }
+    })
+
+    if(houseCode){
+      return res.status(400).send({message:`มีข้อมูลของ : ${value.Household.house_code} ในระบบอยู่แล้ว`})
+    }
+
     // create by use transaction
     const result = await db.sequelize.transaction(async (t) => {
       //เริ่มสร้างข้อมูลลงทีละตาราง
