@@ -1,24 +1,24 @@
-const ExportService = require('../services/ExportExcel.service')
-
+const ExportService = require("../services/ExportExcel.service");
+const logService = require("../services/log.service");
 
 const householdList = async (req, res) => {
   await ExportService.householdList()
-    .then(data => {
+    .then((data) => {
       res.send({
         data: data,
         msg: "success",
-        status: 200
+        status: 200,
       });
     })
-    .catch(err => {
+    .catch((err) => {
       res.send({
         data: null,
         msg: "error",
         status: 500,
-        err: err
+        err: err,
       });
     });
-}
+};
 
 const gethousehold = async (req, res) => {
   try {
@@ -44,9 +44,21 @@ const getFindhousehold = async (req, res) => {
     const pageNum = parseInt(page) || 1;
     const getAllData = getAll === "true"; // ✅ แปลงค่า getAll เป็น Boolean
 
-    const data = await ExportService.getFindHouseHold(year, houseCode, subdistrict, district, pageNum, 10, getAllData);
+    const data = await ExportService.getFindHouseHold(
+      year,
+      houseCode,
+      subdistrict,
+      district,
+      pageNum,
+      10,
+      getAllData
+    );
 
     if (getAllData) {
+      //log
+      const user_id = req.user.id;
+      await logService.createLog(user_id, "นำออกข้อมูล Excel", "Household", 1);
+
       // ✅ สร้างไฟล์ Excel และส่งคืนให้ดาวน์โหลด
       const ExcelJS = require("exceljs");
       const workbook = new ExcelJS.Workbook();
@@ -76,8 +88,14 @@ const getFindhousehold = async (req, res) => {
       });
 
       const buffer = await workbook.xlsx.writeBuffer();
-      res.setHeader("Content-Disposition", "attachment; filename=HouseholdData.xlsx");
-      res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+      res.setHeader(
+        "Content-Disposition",
+        "attachment; filename=HouseholdData.xlsx"
+      );
+      res.setHeader(
+        "Content-Type",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      );
       return res.send(buffer);
     }
 
@@ -101,7 +119,6 @@ const getFindhousehold = async (req, res) => {
   }
 };
 
-
 const getYears = async (req, res) => {
   try {
     const years = await ExportService.getAvailableYears();
@@ -109,16 +126,24 @@ const getYears = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       msg: "Error fetching years",
-      error: error.message
+      error: error.message,
     });
   }
 };
 
-
+const log = async (req, res) => {
+  try {
+    const user_id = req.user.id;
+    await logService.createLog(user_id, "นำออกข้อมูล Excel", "Household", 1);
+  } catch (err) {
+    return res.status(500).send({ message: "Sever error", error: err.message });
+  }
+};
 
 module.exports = {
   householdList,
   gethousehold,
   getFindhousehold,
   getYears,
+  log,
 };
